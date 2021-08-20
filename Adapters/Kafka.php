@@ -17,10 +17,7 @@ class Kafka
 
     public function handle(RecordInterface $record): void
     {
-        $saleOrder = new SaleOrder(
-            $record->getId(),
-            $record->getStatus()
-        );
+        $saleOrder = new RecordSaleOrderAdapter($record);
 
         $this->service->save($saleOrder);
     }

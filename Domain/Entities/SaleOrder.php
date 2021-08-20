@@ -2,7 +2,8 @@
 
 namespace Domain\Entities;
 
-class SaleOrder
+use Domain\Ports\SaleOrder as SaleOrderInterface;
+class SaleOrder implements SaleOrderInterface
 {
     private $id;
     private $status;

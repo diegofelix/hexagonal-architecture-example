@@ -25,10 +25,7 @@ class Controller extends FrameworkController
 
     public function save(Request $request)
     {
-        $saleOrder = new SaleOrder(
-            $request->get('id'),
-            $request->get('status')
-        );
+        $saleOrder = new RequestSaleOrderAdapter($request);
 
         if ($this->service->save($saleOrder)) {
             return $this->respondAsJson($saleOrder);
