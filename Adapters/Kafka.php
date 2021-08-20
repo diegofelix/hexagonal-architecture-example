@@ -4,31 +4,23 @@ namespace Adapters;
 
 use Domain\Ports\Message;
 use Domain\Service\Service;
-use Metamorphosis\Kafka\AvroTransformer;
-use Metamorphosis\Kafka\Dispatcher;
+use Metamorphosis\Kafka\RecordInterface;
 
-class Kafka implements Message
+class Kafka
 {
-    private $avro;
-    private $dispatcher;
+    private $service;
 
-    public function __construct(AvroTransformer $avro, Dispatcher $dispatcher, Service $service)
+    public function __construct(Service $service)
     {
         $this->service = $service;
-        $this->avro = $avro;
-        $this->dispatcher = $dispatcher;
     }
 
-    public function send(SaleOrder $saleOrder): bool
+    public function handle(RecordInterface $record): void
     {
-        $payload = $this->avro->transform($saleOrder);
-
-        $this->dispatcher->send($payload);
-    }
-
-    public function receive(array $record): SaleOrder
-    {
-        $saleOrder = $this->avro->transform($record);
+        $saleOrder = new SaleOrder(
+            $record->getId(),
+            $record->getStatus()
+        );
 
         $this->service->save($saleOrder);
     }

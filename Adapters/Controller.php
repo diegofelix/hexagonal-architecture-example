@@ -16,10 +16,24 @@ class Controller extends FrameworkController
     /**
      * @get /sale-orders/{id}
      */
-    public function get(Request $request)
+    public function get(string $id)
     {
-        $saleOrder = $this->service->findById($request->input('id'));
+        $saleOrder = $this->service->findById($id);
 
         return $this->respondAsJson($saleOrder);
+    }
+
+    public function save(Request $request)
+    {
+        $saleOrder = new SaleOrder(
+            $request->get('id'),
+            $request->get('status')
+        );
+
+        if ($this->service->save($saleOrder)) {
+            return $this->respondAsJson($saleOrder);
+        }
+
+        return $this->respondWithError('cannot save sale order');
     }
 }
